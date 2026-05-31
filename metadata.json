@@ -1,0 +1,8 @@
+{
+  "name": "Remix: Remix: USD Halo",
+  "description": "Your Wealth Works. A reward-powered digital dollar built for native passive earnings and effortless connection into DeFi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

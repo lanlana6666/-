@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-serif: "Noto Serif SC", serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --color-primary: #5C633F;
+  --color-primary-container: #8A9A5B;
+  --color-primary-light: #E8EAE0;
+  --color-secondary: #8A9A5B;
+  --color-secondary-container: #E8EAE0;
+  --color-tertiary: #C4D300;
+  --color-background: #FDFCF8;
+  --color-surface: #ffffff;
+  --color-surface-beige: #E8EAE0;
+  --color-surface-container: #F1F2ED;
+  --color-on-surface: #333333;
+  --color-on-surface-variant: #555555;
+  --color-outline: #8A9A5B;
+  --color-outline-variant: #D1D5DB;
+  --color-error: #ba1a1a;
+  --color-error-container: #ffdad6;
+
+  --animate-fade-in-up: fade-in-up 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+::selection {
+  background-color: #5C633F;
+  color: #ffffff;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Custom Utilities and Hide Scrollbars */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.glow-btn:hover {
+  box-shadow: 0 8px 24px -4px rgba(92, 99, 63, 0.25);
+}
+
+.glass-nav {
+  backdrop-filter: blur(12px);
+  background: rgba(253, 252, 248, 0.85);
+}
+
+.zen-gradient {
+  background: linear-gradient(180deg, rgba(253, 252, 248, 0) 0%, rgba(232, 234, 224, 1) 100%);
+}
+
+.mille-feuille-gradient {
+  background: linear-gradient(180deg, rgba(253, 252, 248, 0) 0%, rgba(200, 211, 0, 0.1) 100%);
+}
+
+/* Micro-animations */
+.spring-click {
+  transition: transform 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.spring-click:active {
+  transform: scale(0.95);
+}
+
+/* Custom Matcha Ice Cream Cursor for the entire applet and custom hover states */
+html, body, .matcha-cursor-active {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-30 16 16)'%3E%3Cpath d='M12 18 L20 18 L16 28 Z' fill='%23D29B52' stroke='%238C5C23' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M14 18 L18 24 M15 20 L17 20 M13 22 L19 22' stroke='%23B87C31' stroke-width='1'/%3E%3Cpath d='M10 18 C8 18 8 15 11 14 C12 13 20 13 21 14 C24 15 24 18 22 18 Z' fill='%238A9A5B' stroke='%235C633F' stroke-width='1.5'/%3E%3Cpath d='M11 14 C10 14 10 11 13 11 C14 10 18 10 19 11 C22 11 22 14 21 14 Z' fill='%239FB46C' stroke='%235C633F' stroke-width='1.5'/%3E%3Cpath d='M13 11 C13 8 16 6 16 6 C16 6 19 8 19 11 Z' fill='%23B4CB7E' stroke='%235C633F' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='5' r='2.5' fill='%23e11d48'/%3E%3C/g%3E%3C/svg%3E") 11 7, auto;
+}
+
+/* Also ensure hover elements preserve this cute theme */
+a, button, [role="button"], select, input, label, .cursor-pointer {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-30 16 16)'%3E%3Cpath d='M12 18 L20 18 L16 28 Z' fill='%23D29B52' stroke='%238C5C23' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M14 18 L18 24 M15 20 L17 20 M13 22 L19 22' stroke='%23B87C31' stroke-width='1'/%3E%3Cpath d='M10 18 C8 18 8 15 11 14 C12 13 20 13 21 14 C24 15 24 18 22 18 Z' fill='%238A9A5B' stroke='%235C633F' stroke-width='1.5'/%3E%3Cpath d='M11 14 C10 14 10 11 13 11 C14 10 18 10 19 11 C22 11 22 14 21 14 Z' fill='%239FB46C' stroke='%235C633F' stroke-width='1.5'/%3E%3Cpath d='M13 11 C13 8 16 6 16 6 C16 6 19 8 19 11 Z' fill='%23B4CB7E' stroke='%235C633F' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='5' r='2.5' fill='%23e11d48'/%3E%3C/g%3E%3C/svg%3E") 11 7, pointer !important;
+}
+
+/* Interactive click-down squish visual feedback */
+html:active, body:active, a:active, button:active, [role="button"]:active, .cursor-pointer:active {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg transform='rotate(-45 16 16) scale(0.85)'%3E%3Cpath d='M12 18 L20 18 L16 28 Z' fill='%23D29B52' stroke='%238C5C23' stroke-width='1.5' stroke-linejoin='round'/%3E%3Cpath d='M14 18 L18 24 M15 20 L17 20 M13 22 L19 22' stroke='%23B87C31' stroke-width='1'/%3E%3Cpath d='M10 18 C8 18 8 15 11 14 C12 13 20 13 21 14 C24 15 24 18 22 18 Z' fill='%238A9A5B' stroke='%235C633F' stroke-width='1.5'/%3E%3Cpath d='M11 14 C10 14 10 11 13 11 C14 10 18 10 19 11 C22 11 22 14 21 14 Z' fill='%239FB46C' stroke='%235C633F' stroke-width='1.5'/%3E%3Cpath d='M13 11 C13 8 16 6 16 6 C16 6 19 8 19 11 Z' fill='%23B4CB7E' stroke='%235C633F' stroke-width='1.5'/%3E%3Ccircle cx='16' cy='5' r='2.5' fill='%23e11d48'/%3E%3C/g%3E%3C/svg%3E") 10 10, pointer !important;
+}
