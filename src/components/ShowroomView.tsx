@@ -989,7 +989,7 @@ export default function ShowroomView({
                     <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-ping"></span>
                     秋叶御用木质漆案
                   </h4>
-                  <p className="text-[10px] font-mono text-[#555555] uppercase tracking-wider mt-1">
+                  <p className="text-[10px] font-mono text-[#333333] font-medium uppercase tracking-wider mt-1">
                     YOUR EXQUISITE TRAY: {packedItems.length} OF {packSize} FILLED
                   </p>
                 </div>
@@ -1014,7 +1014,7 @@ export default function ShowroomView({
                       key={index}
                       className={`relative aspect-square rounded-2xl border transition-all flex flex-col justify-between p-3 overflow-hidden ${
                         packedProduct
-                          ? 'bg-[#E8EAE0]/20 border-[#c4c8b7]/50 shadow-xs'
+                          ? 'bg-[#1C2219] border-[#8A9A5B]/40 shadow-md'
                           : 'border-dashed border-[#c4c8b7]/80 bg-[#E8EAE0]/10 hover:bg-[#E8EAE0]/30'
                       }`}
                     >
@@ -1028,30 +1028,30 @@ export default function ShowroomView({
                           />
                           <button
                             onClick={() => handleRemoveItemFromPack(index)}
-                            className="absolute top-2.5 right-2.5 z-20 w-5 h-5 rounded-full bg-[#121811]/10 hover:bg-rose-100 text-[#2C3E20] hover:text-rose-700 transition-all flex items-center justify-center text-sm font-bold active:scale-95 cursor-pointer backdrop-blur-xs border border-white/20"
+                            className="absolute top-2.5 right-2.5 z-20 w-5 h-5 rounded-full bg-white/10 hover:bg-rose-600/90 text-stone-200 hover:text-white transition-all flex items-center justify-center text-xs font-bold active:scale-95 cursor-pointer backdrop-blur-xs border border-white/10"
                             title="移出托盘"
                           >
                             ×
                           </button>
                           <div className="relative z-10 flex flex-col h-full justify-between">
-                            <span className="font-mono text-[9px] text-[#8A9A5B] font-bold">
+                            <span className="font-mono text-[10px] text-[#A2B17A] font-extrabold tracking-wider">
                               SLOT {index + 1}
                             </span>
                             
                             <div>
-                              <p className="font-serif font-bold text-xs leading-tight text-[#333333] line-clamp-2 mb-1">
+                              <p className="font-serif font-extrabold text-[13px] leading-tight text-white mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                                 {packedProduct.name.split(' · ')[0]}
                               </p>
-                              <p className="font-mono text-[9px] text-[#555555] leading-none">
+                              <p className="font-mono text-[11px] text-amber-200 font-extrabold leading-none">
                                 ¥{packedProduct.price}
                               </p>
                             </div>
                           </div>
                         </>
                       ) : (
-                        <div className="flex flex-col items-center justify-center h-full text-[#8A9A5B]/80 font-medium gap-1 select-none">
-                          <span className="text-xs font-mono font-bold">SLOT {index + 1}</span>
-                          <span className="text-[10px]">待充盈</span>
+                        <div className="flex flex-col items-center justify-center h-full text-[#8A9A5B]/90 font-semibold gap-1 select-none">
+                          <span className="text-xs font-mono font-bold text-[#8A9A5B]">SLOT {index + 1}</span>
+                          <span className="text-[10px] text-[#8A9A5B]/80">待充盈</span>
                         </div>
                       )}
                     </div>
@@ -1070,7 +1070,7 @@ export default function ShowroomView({
                       </span>
                     )}
                   </div>
-                  <p className="text-[11px] text-[#555555] font-mono">
+                  <p className="text-[11px] text-[#2C3E20] font-semibold font-mono">
                     {packedItems.length === 0
                       ? '请在右侧选择好物装点您的托盘...'
                       : `包含 ${packedItems.length} 件高级单品`}
