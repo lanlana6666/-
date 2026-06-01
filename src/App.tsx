@@ -5,11 +5,13 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Home, Compass, BookOpen, ShoppingCart, User, Landmark, HelpCircle, UtensilsCrossed, AlertCircle, CheckCircle, Info, Leaf, Sparkles } from 'lucide-react';
+import { Home, Compass, BookOpen, ShoppingCart, User, Landmark, HelpCircle, UtensilsCrossed, AlertCircle, CheckCircle, Info, Leaf, Sparkles, Rotate3d, Volume2, VolumeX } from 'lucide-react';
 import { Product, CartItem, ShippingInfo, ViewType } from './types';
 import { products } from './data';
 
 // Component imports
+import { playClickSound, playChimeSound } from './utils/audio';
+import LoadingScreen from './components/LoadingScreen';
 import HomeView from './components/HomeView';
 import CatalogView from './components/CatalogView';
 import DetailView from './components/DetailView';
@@ -20,6 +22,7 @@ import StoryView from './components/StoryView';
 import AutumnView from './components/AutumnView';
 import ShowroomView from './components/ShowroomView';
 import DynamicBackground from './components/DynamicBackground';
+import InteractiveCake3D from './components/InteractiveCake3D';
 
 interface ClickRipple {
   id: number;
@@ -31,14 +34,32 @@ interface ClickRipple {
 }
 
 export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<ViewType>('home');
   const [selectedCategory, setSelectedCategory] = useState<'cakes' | 'drinks' | 'icecream' | 'gifts' | 'all'>('all');
   const [activeProduct, setActiveProduct] = useState<Product | null>(null);
   
+  // Dynamic audio controls
+  const [isMuted, setIsMuted] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('peaceput-muted') === 'true';
+    }
+    return false;
+  });
+
+  const toggleMute = () => {
+    const nextMuted = !isMuted;
+    setIsMuted(nextMuted);
+    localStorage.setItem('peaceput-muted', String(nextMuted));
+    if (!nextMuted) {
+      setTimeout(() => playClickSound(), 50);
+    }
+  };
+  
   // Dynamic matcha click particles state
   const [clickRipples, setClickRipples] = useState<ClickRipple[]>([]);
 
-  // Setup global mouse click active ripple listener
+  // Setup global mouse click active ripple listener and premium physical sound feedback
   useEffect(() => {
     const handleMouseClick = (e: MouseEvent) => {
       const clickEmojis = ['🍵', '🍃', '✨', '🌸', '🍵', '🍦'];
@@ -54,13 +75,39 @@ export default function App() {
       };
 
       setClickRipples(prev => [...prev.slice(-9), newRipple]);
+
+      // Sound effect play condition: target is interactable and sound is not muted
+      const target = e.target as HTMLElement;
+      if (target) {
+        const isClickable =
+          target.tagName === 'BUTTON' ||
+          target.tagName === 'A' ||
+          target.closest('button') ||
+          target.closest('a') ||
+          target.closest('.cursor-pointer') ||
+          target.classList.contains('cursor-pointer') ||
+          target.tagName === 'INPUT' ||
+          target.tagName === 'SELECT' ||
+          target.tagName === 'TEXTAREA';
+
+        if (isClickable && !isMuted) {
+          playClickSound();
+        }
+      }
     };
 
     window.addEventListener('click', handleMouseClick);
     return () => {
       window.removeEventListener('click', handleMouseClick);
     };
-  }, []);
+  }, [isMuted]);
+
+  // Trigger gentle organic wooden-chimes on route/tab switches
+  useEffect(() => {
+    if (!isLoading && !isMuted) {
+      playChimeSound();
+    }
+  }, [activeTab, isLoading, isMuted]);
   
   // Cart state
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -224,34 +271,42 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-on-surface font-sans transition-colors duration-300 relative overflow-x-hidden">
+      <AnimatePresence>
+        {isLoading && <LoadingScreen onFinished={() => setIsLoading(false)} />}
+      </AnimatePresence>
       <DynamicBackground />
-      {/* Pristine Responsive Top Header Navigation */}
-      <header className="fixed top-0 left-0 right-0 z-50 glass-nav border-b border-outline-variant/20 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center h-16">
+      {/* Pristine Responsive Top Header Navigation (peaceput.com template) */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-[#F7F5F0]/95 backdrop-blur-md border-b border-[#2C3E20]/15 shadow-xs transition-colors">
+        <div className="max-w-7xl mx-auto px-6 flex justify-between items-center h-20">
           <div 
             onClick={() => handleResetApp()}
-            className="flex items-center gap-2 cursor-pointer group"
+            className="flex flex-col items-start cursor-pointer group"
           >
-            <span className="text-xl sm:text-2xl font-serif italic text-primary font-bold tracking-widest leading-none transition-transform group-hover:scale-102">
-              抹茶禅意
-            </span>
-            <span className="text-[10px] text-outline font-mono border border-primary/20 px-1.5 py-0.5 rounded leading-none pt-1 hidden xs:inline-block">
-              MATCHA ZEN
+            <div className="flex items-baseline gap-2">
+              <span className="text-xl sm:text-2xl font-serif text-[#2C3E20] font-normal tracking-[0.2em] uppercase transition-transform group-hover:scale-[1.01]">
+                peace put
+              </span>
+              <span className="text-[10px] text-[#8A9A5B] font-mono tracking-widest pl-1">
+                MATCHA LAB
+              </span>
+            </div>
+            <span className="text-[8px] sm:text-[9px] text-[#2C3E20]/60 font-mono tracking-wider uppercase mt-0.5 leading-none">
+              putting a moment of peace to cities around the world
             </span>
           </div>
 
-          {/* Desktop Links (Hidden on mobile) */}
-          <nav className="hidden md:flex gap-10 items-center font-serif text-sm font-bold tracking-wider">
+          {/* Desktop Links (Separated by fine dividers in a modular layout like peaceput.com) */}
+          <nav className="hidden lg:flex items-center h-full text-[11px] font-sans font-bold tracking-[0.25em] text-[#2C3E20]/80 uppercase">
             <button
               onClick={() => {
                 setActiveTab('home');
                 setActiveProduct(null);
               }}
-              className={`transition-colors py-1 ${
-                activeTab === 'home' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'
+              className={`h-full px-6 border-l border-[#2C3E20]/10 hover:text-[#5C633F] hover:bg-[#2C3E20]/2 transition-all ${
+                activeTab === 'home' ? 'text-[#5C633F] bg-[#2C3E20]/3 border-b-2 border-[#5C633F]' : ''
               }`}
             >
-              茶寮首页
+              首页 • HOME
             </button>
             <button
               onClick={() => {
@@ -259,63 +314,89 @@ export default function App() {
                 setActiveTab('catalog');
                 setActiveProduct(null);
               }}
-              className={`transition-colors py-1 ${
-                activeTab === 'catalog' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'
+              className={`h-full px-6 border-l border-[#2C3E20]/10 hover:text-[#5C633F] hover:bg-[#2C3E20]/2 transition-all ${
+                activeTab === 'catalog' ? 'text-[#5C633F] bg-[#2C3E20]/3 border-b-2 border-[#5C633F]' : ''
               }`}
             >
-              甜点谱
+              点心谱 • CATALOG
             </button>
             <button
               onClick={() => {
                 setActiveTab('autumn');
                 setActiveProduct(null);
               }}
-              className={`transition-colors py-1 flex items-center gap-1 ${
-                activeTab === 'autumn' ? 'text-amber-800 border-b-2 border-amber-800 font-bold' : 'text-on-surface-variant hover:text-amber-800'
+              className={`h-full px-6 border-l border-[#2C3E20]/10 hover:text-amber-800 hover:bg-amber-800/3 transition-all ${
+                activeTab === 'autumn' ? 'text-amber-800 bg-amber-800/5 border-b-2 border-amber-800 font-extrabold' : ''
               }`}
             >
-              <span className="text-amber-600 animate-pulse text-xs">🍁</span>
-              秋季限定
+              🍁 秋季限定 • AUTUMN
             </button>
             <button
               onClick={() => {
                 setActiveTab('showroom');
                 setActiveProduct(null);
               }}
-              className={`transition-colors py-1 flex items-center gap-1 ${
-                activeTab === 'showroom' ? 'text-emerald-700 border-b-2 border-emerald-700 font-bold' : 'text-on-surface-variant hover:text-primary'
+              className={`h-full px-6 border-l border-[#2C3E20]/10 hover:text-emerald-800 hover:bg-emerald-800/3 transition-all ${
+                activeTab === 'showroom' ? 'text-emerald-800 bg-emerald-800/5 border-b-2 border-emerald-800' : ''
               }`}
             >
-              <span className="text-emerald-600 animate-pulse text-xs">🌟</span>
-              御茶秀场
+              🌟 御茶秀场 • SHOWROOM
+            </button>
+            <button
+              onClick={() => {
+                setActiveTab('cakelab');
+                setActiveProduct(null);
+              }}
+              className={`h-full px-6 border-l border-[#2C3E20]/10 hover:text-emerald-800 hover:bg-[#2C3E20]/2 transition-all flex items-center gap-1.5 ${
+                activeTab === 'cakelab' ? 'text-emerald-800 bg-emerald-800/5 border-b-2 border-emerald-800' : ''
+              }`}
+            >
+              <Rotate3d className="w-3.5 h-3.5 text-emerald-700 animate-spin-slow" />
+              3D 定制 • LAB
             </button>
             <button
               onClick={() => {
                 setActiveTab('story');
                 setActiveProduct(null);
               }}
-              className={`transition-colors py-1 ${
-                activeTab === 'story' ? 'text-primary border-b-2 border-primary' : 'text-on-surface-variant hover:text-primary'
+              className={`h-full px-6 border-l border-r border-[#2C3E20]/10 hover:text-[#5C633F] hover:bg-[#2C3E20]/2 transition-all ${
+                activeTab === 'story' ? 'text-[#5C633F] bg-[#2C3E20]/3 border-b-2 border-[#5C633F]' : ''
               }`}
             >
-              品牌故事
+              故事 • STORY
             </button>
           </nav>
 
           {/* Header Action Badges */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-4">
+            {/* Audio Premium Toggle Button */}
+            <button
+              onClick={toggleMute}
+              className={`p-3 rounded-full hover:bg-[#2C3E20]/5 transition-all relative shrink-0 active:scale-95 border border-[#2C3E20]/10 bg-white/50 cursor-pointer text-[#2C3E20] ${
+                isMuted ? 'opacity-60' : 'opacity-100'
+              }`}
+              title={isMuted ? "开启音效" : "静音音效"}
+              aria-label="切换金声音效"
+            >
+              {isMuted ? (
+                <VolumeX className="w-4.5 h-4.5 text-[#2C3E20]/60" />
+              ) : (
+                <Volume2 className="w-4.5 h-4.5 text-[#5C633F] animate-pulse" style={{ animationDuration: '4s' }} />
+              )}
+            </button>
+
             {/* Header Mini Cart Badge */}
             <button
               onClick={() => {
                 setActiveTab('cart');
                 setActiveProduct(null);
               }}
-              className="p-2.5 rounded-full hover:bg-surface-container transition-all relative shrink-0 active:scale-90"
+              className="p-3 rounded-full hover:bg-[#2C3E20]/5 transition-all relative shrink-0 active:scale-95 border border-[#2C3E20]/10 bg-white/50"
               title="查看购物车"
             >
-              <ShoppingCart className="w-5 h-5 text-primary" />
+              <ShoppingCart className="w-4.5 h-4.5 text-[#2C3E20]" />
               {totalCartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white font-mono text-[9px] w-4.5 h-4.5 rounded-full flex items-center justify-center font-bold animate-pulse">
+                <span className="absolute -top-1 -right-1 bg-amber-700 text-white font-mono text-[9px] w-5 h-5 rounded-full flex items-center justify-center font-bold shadow-sm animate-pulse">
                   {totalCartCount}
                 </span>
               )}
@@ -324,8 +405,11 @@ export default function App() {
         </div>
       </header>
 
-      {/* Main Content Router wrapper with top gap for fixed header banner */}
-      <div className="pt-16 pb-12">
+      {/* Main Content Router wrapper with top gap for fixed header banner and luxury typography progressive reveal */}
+      <div 
+        className="pt-20 pb-12 page-fade-in" 
+        key={`${activeTab}-${activeProduct?.id || 'none'}`}
+      >
         {activeTab === 'home' && !activeProduct && (
           <HomeView
             onNavigate={(view) => {
@@ -434,6 +518,31 @@ export default function App() {
         )}
 
         {activeTab === 'story' && !activeProduct && <StoryView />}
+
+        {activeTab === 'cakelab' && !activeProduct && (
+          <motion.div
+            initial={{ opacity: 0, y: 15 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-7xl mx-auto px-4 md:px-8 mt-6"
+          >
+            <div className="mb-10 text-center relative z-10">
+              <span className="text-secondary text-xs sm:text-sm font-mono tracking-[0.4em] uppercase block mb-2 font-bold">
+                MATCHA CREATIVE LAB • MASTERPIECE CUSTOMIZER
+              </span>
+              <h1 className="font-serif italic text-4xl sm:text-5xl text-primary font-bold tracking-normal drop-shadow-sm mb-4">
+                3D 抹茶高定工坊
+              </h1>
+              <p className="text-xs sm:text-sm text-on-surface-variant max-w-xl mx-auto leading-relaxed">
+                在这里，您不仅在品尝抹茶，更是在亲手塑造一件绿意的艺术品。
+                利用先进 3D 模拟体感，自主堆叠千层层数、微调霜层颜色与精制配料，高定专属味道。
+              </p>
+              <div className="w-16 h-0.5 bg-primary/20 mx-auto mt-6 rounded-full" />
+            </div>
+            
+            <InteractiveCake3D onAddToCart={handleAddToCart} />
+          </motion.div>
+        )}
       </div>
 
       {/* Persistent Bottom Mobile Navigation Tab Bar (Hidden on Desktop) */}
@@ -489,6 +598,19 @@ export default function App() {
         >
           <Sparkles className={`w-5 h-5 ${activeTab === 'showroom' ? 'text-emerald-700 fill-emerald-600/10' : ''}`} />
           <span>御茶秀场</span>
+        </button>
+
+        <button
+          onClick={() => {
+            setActiveTab('cakelab');
+            setActiveProduct(null);
+          }}
+          className={`flex flex-col items-center justify-center gap-1 text-[10px] font-bold font-serif tracking-wider shrink-0 transition-colors w-14 ${
+            activeTab === 'cakelab' ? 'text-emerald-700' : 'text-on-surface-variant'
+          }`}
+        >
+          <Rotate3d className={`w-5 h-5 ${activeTab === 'cakelab' ? 'text-emerald-700' : ''}`} />
+          <span>3D高定</span>
         </button>
 
         <button

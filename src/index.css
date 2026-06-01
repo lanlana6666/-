@@ -42,6 +42,55 @@
   }
 }
 
+/* Luxury progressive text and typography reveal keyframe */
+@keyframes luxury-text-reveal {
+  0% {
+    opacity: 0;
+    filter: blur(8px) brightness(1.25);
+    transform: translateY(14px);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0px) brightness(1);
+    transform: translateY(0px);
+  }
+}
+
+/* Automatic progressive fade-in layout for page routing */
+.page-fade-in h1,
+.page-fade-in h2,
+.page-fade-in .hero-title,
+.page-fade-in .font-serif.text-4xl,
+.page-fade-in .font-serif.text-5xl,
+.page-fade-in .font-serif.text-3xl {
+  animation: luxury-text-reveal 1.0s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.page-fade-in h3,
+.page-fade-in .font-serif.text-2xl,
+.page-fade-in .font-serif.text-xl {
+  animation: luxury-text-reveal 1.1s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.08s;
+}
+
+.page-fade-in p,
+.page-fade-in span.text-on-surface-variant,
+.page-fade-in .font-sans.text-sm {
+  animation: luxury-text-reveal 1.2s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.15s;
+}
+
+.page-fade-in .product-card,
+.page-fade-in .brand-card,
+.page-fade-in label,
+.page-fade-in input,
+.page-fade-in select,
+.page-fade-in .menu-grid-item,
+.page-fade-in img {
+  animation: luxury-text-reveal 1.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation-delay: 0.22s;
+}
+
 /* Custom Utilities and Hide Scrollbars */
 .hide-scrollbar::-webkit-scrollbar {
   display: none;

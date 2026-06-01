@@ -6,7 +6,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Wind, HelpCircle, Eye, EyeOff, Sliders, Moon, Sparkles, Feather } from 'lucide-react';
 
-export type BackgroundPreset = 'spring-drift' | 'golden-milling' | 'zen-mist' | 'minimal-still';
+export type BackgroundPreset = 'gilt-flow' | 'spring-drift' | 'golden-milling' | 'zen-mist' | 'minimal-still';
 
 interface LeafParticle {
   x: number;
@@ -36,10 +36,11 @@ interface SpiceParticle {
 }
 
 export default function DynamicBackground() {
-  const [preset, setPreset] = useState<BackgroundPreset>('spring-drift');
+  const [preset, setPreset] = useState<BackgroundPreset>('gilt-flow');
   const [intensity, setIntensity] = useState<number>(1.2); // Speed multiplier
   const [showControls, setShowControls] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(true);
+  const [videoBg, setVideoBg] = useState<'gilt' | 'stream' | 'bamboo' | 'none'>('gilt');
   
   const containerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -213,7 +214,40 @@ export default function DynamicBackground() {
       c.restore();
     };
 
+    // Function to draw beautiful irregular gold foil flakes
+    const drawGoldFlake = (
+      c: CanvasRenderingContext2D,
+      x: number,
+      y: number,
+      size: number,
+      angle: number,
+      color: string,
+      alpha: number
+    ) => {
+      c.save();
+      c.translate(x, y);
+      c.rotate(angle);
+      c.globalAlpha = alpha;
+      c.fillStyle = color;
+      
+      // 3D-like metallic shadow glow
+      c.shadowColor = 'rgba(212, 175, 55, 0.45)';
+      c.shadowBlur = 6;
+
+      c.beginPath();
+      // Irregular gold foil tears polygon structure
+      c.moveTo(-size * 0.6, -size * 0.5);
+      c.lineTo(size * 0.7, -size * 0.7);
+      c.lineTo(size * 0.9, size * 0.3);
+      c.lineTo(size * 0.2, size * 0.85);
+      c.lineTo(-size * 0.8, size * 0.6);
+      c.closePath();
+      c.fill();
+      c.restore();
+    };
+
     let time = 0;
+    let windAccumX = 0;
 
     const tick = () => {
       time += 0.01;
@@ -222,16 +256,109 @@ export default function DynamicBackground() {
       const currentPreset = presetRef.current;
       const speedMult = intensityRef.current;
 
+      // Dynamic wind velocity from mouse movements
+      const mouse = mouseRef.current;
+      const windForceX = mouse.active ? mouse.vx * 0.45 : 0;
+      const windForceY = mouse.active ? mouse.vy * 0.42 : 0;
+
+      // Draw flowing horizontal water waves & volumetric liquid bodies across the full canvas area
+      if (isVisibleRef.current && currentPreset !== 'minimal-still') {
+        windAccumX += windForceX * 0.1;
+        
+        // --- Part A: Volumetric Liquid Flowing Bodies (3 Overlapping Parallax Gradient Waves) ---
+        const numLiquidLayers = 3;
+        for (let i = 0; i < numLiquidLayers; i++) {
+          ctx.beginPath();
+          
+          // Generate a smooth gradient representive of high-end tea liquor flowing
+          const grad = ctx.createLinearGradient(0, 0, 0, height);
+          if (i === 0) {
+            // Upper layer (very soft pastel green water body)
+            grad.addColorStop(0, 'rgba(199, 220, 167, 0.05)');
+            grad.addColorStop(0.5, 'rgba(138, 154, 91, 0.01)');
+            grad.addColorStop(1, 'rgba(199, 220, 167, 0.04)');
+          } else if (i === 1) {
+            // Mid layer (soothing mist flow)
+            grad.addColorStop(0, 'rgba(138, 154, 91, 0.025)');
+            grad.addColorStop(0.6, 'rgba(199, 220, 167, 0.035)');
+            grad.addColorStop(1, 'rgba(92, 99, 63, 0.015)');
+          } else {
+            // Heavy deep layer (silky Matcha liquor river)
+            grad.addColorStop(0, 'rgba(199, 220, 167, 0.01)');
+            grad.addColorStop(0.4, 'rgba(92, 99, 63, 0.03)');
+            grad.addColorStop(1, 'rgba(138, 154, 91, 0.05)');
+          }
+          ctx.fillStyle = grad;
+
+          // Draw the fluid body curve
+          ctx.moveTo(0, height);
+          
+          const speedFactor = (0.24 - i * 0.06) * speedMult;
+          const waveFreq = 0.0018 + i * 0.0008;
+          const waveAmp = 40 + i * 18;
+          const verticalCenter = (height * 0.2) + (i * (height * 0.24));
+
+          for (let x = 0; x <= width + 40; x += 30) {
+            const flowOffset = (time * speedFactor) + (i * 3.4) + windAccumX;
+            const waveValue1 = Math.sin(x * waveFreq + flowOffset);
+            const waveValue2 = Math.cos(x * waveFreq * 1.8 - flowOffset * 0.5) * 0.4;
+            const y = verticalCenter + (waveValue1 + waveValue2) * waveAmp;
+            ctx.lineTo(x, y);
+          }
+
+          // Complete polygon down to screen bottom to fill the volumetric body
+          ctx.lineTo(width + 40, height);
+          ctx.lineTo(0, height);
+          ctx.closePath();
+          ctx.fill();
+        }
+
+        // --- Part B: Linear Ripple Contours (Surface Tension Lines) ---
+        const waveSpacing = 240; 
+        const numWaveBands = Math.ceil(height / waveSpacing) + 1;
+
+        for (let band = 0; band <= numWaveBands; band++) {
+          const yc = band * waveSpacing - 10;
+          
+          // Foreground fine shimmering water refraction line
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(210, 222, 193, 0.07)'; 
+          ctx.lineWidth = 1.4;
+          for (let x = 0; x <= width + 40; x += 30) {
+            const phaseOffset = band * 0.52;
+            const flowOffset = (time * 0.38 * speedMult) + windAccumX;
+            const wave1 = Math.sin(x * 0.0028 + flowOffset + phaseOffset) * 22;
+            const wave2 = Math.cos(x * 0.0055 - flowOffset * 0.6 + phaseOffset * 1.3) * 7;
+            const y = yc + wave1 + wave2;
+            
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+
+          // Delicate bottom reflection highlight
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(138, 154, 91, 0.03)';
+          ctx.lineWidth = 0.8;
+          for (let x = 0; x <= width + 40; x += 40) {
+            const phaseOffset = band * 1.1 + 0.8;
+            const flowOffset = (time * 0.25 * speedMult) + windAccumX * 1.15;
+            const wave1 = Math.sin(x * 0.0042 - flowOffset + phaseOffset) * 12;
+            const wave2 = Math.cos(x * 0.0085 + flowOffset * 0.4 + phaseOffset * 0.7) * 4;
+            const y = yc - 15 + wave1 + wave2;
+            
+            if (x === 0) ctx.moveTo(x, y);
+            else ctx.lineTo(x, y);
+          }
+          ctx.stroke();
+        }
+      }
+
       if (!isVisibleRef.current || currentPreset === 'minimal-still') {
         // Minimal/Still mode: do not re-render heavy canvas calculations
         animationId = requestAnimationFrame(tick);
         return;
       }
-
-      // Dynamic wind velocity from mouse movements
-      const mouse = mouseRef.current;
-      const windForceX = mouse.active ? mouse.vx * 0.45 : 0;
-      const windForceY = mouse.active ? mouse.vy * 0.42 : 0;
 
       // 1. Draw & update Rising Steam/Milling Sparkles (Golden Milling / Ambient)
       if (currentPreset === 'golden-milling' || currentPreset === 'zen-mist') {
@@ -267,9 +394,14 @@ export default function DynamicBackground() {
         }
       }
 
-      // 2. Draw & update Floating Sways Tea Leaves (Spring Drift Preset)
-      if (currentPreset === 'spring-drift' || currentPreset === 'zen-mist') {
-        const activeLeaves = currentPreset === 'spring-drift' ? leafParticles : leafParticles.slice(0, 24);
+      // 2. Draw & update Floating Sways Tea Leaves / Golden Flakes
+      if (currentPreset === 'spring-drift' || currentPreset === 'gilt-flow' || currentPreset === 'zen-mist') {
+        const isGilt = currentPreset === 'gilt-flow';
+        const activeLeaves = currentPreset === 'spring-drift' 
+          ? leafParticles 
+          : isGilt 
+          ? leafParticles.slice(0, 36) // plenty of gold foil particles
+          : leafParticles.slice(0, 24);
 
         for (let i = 0; i < activeLeaves.length; i++) {
           const p = activeLeaves[i];
@@ -279,8 +411,8 @@ export default function DynamicBackground() {
           const swayAmount = Math.sin(p.swayOffset) * p.speedX * 0.8;
 
           // Apply physics forces: speed + background drag + mouse-breeze
-          p.y += (p.speedY * speedMult * 0.85) + (windForceY * 0.4);
-          p.x += (p.speedX + swayAmount + (windForceX * 0.8));
+          p.y += (p.speedY * speedMult * (isGilt ? 0.95 : 0.85)) + (windForceY * 0.4);
+          p.x += (p.speedX + swayAmount + (windForceX * (isGilt ? 0.9 : 0.8)));
           p.angle += p.spin + (windForceX * 0.02);
 
           // Return boundaries check
@@ -292,8 +424,20 @@ export default function DynamicBackground() {
           if (p.x < -20) p.x = width + 20;
           if (p.x > width + 20) p.x = -20;
 
-          // Draw custom leafy element
-          drawLeaf(ctx, p.x, p.y, p.size, p.angle, p.color, p.opacity);
+          if (isGilt) {
+            // Dynamic premium gold metallic leaf colors
+            const goldColors = [
+              'rgba(218, 165, 32, 0.72)', // goldenrod
+              'rgba(255, 215, 0, 0.85)',   // true gold
+              'rgba(238, 201, 0, 0.65)',   // deep gold
+              'rgba(184, 134, 11, 0.68)',  // dark golden
+              'rgba(253, 240, 196, 0.82)'  // cream gold sparkling
+            ];
+            const customGoldColor = goldColors[i % goldColors.length];
+            drawGoldFlake(ctx, p.x, p.y, p.size * 0.85, p.angle, customGoldColor, p.opacity * 1.25);
+          } else {
+            drawLeaf(ctx, p.x, p.y, p.size, p.angle, p.color, p.opacity);
+          }
         }
       }
 
@@ -310,6 +454,37 @@ export default function DynamicBackground() {
 
   return (
     <div ref={containerRef} className="absolute inset-0 pointer-events-none overflow-hidden z-[1]">
+      {/* Immersive flowing loop background video to fulfill the user's specific premium requirement */}
+      {videoBg !== 'none' && (
+        <div className="absolute inset-0 z-0 overflow-hidden w-full h-full pointer-events-none select-none">
+          <video
+            key={videoBg}
+            src={
+              videoBg === 'gilt'
+                ? 'https://assets.mixkit.co/videos/preview/mixkit-golden-liquid-with-metallic-shimmer-40713-large.mp4'
+                : videoBg === 'stream'
+                ? 'https://assets.mixkit.co/videos/preview/mixkit-forest-stream-in-the-sunlight-529-large.mp4'
+                : 'https://assets.mixkit.co/videos/preview/mixkit-fresh-bamboo-leaves-in-wind-42335-large.mp4'
+            }
+            autoPlay
+            loop
+            muted
+            playsInline
+            className={`absolute inset-0 w-full h-full object-cover transition-all duration-[1500ms] pointer-events-none ${
+              videoBg === 'gilt'
+                ? 'opacity-[0.22] mix-blend-color-burn scale-102 filter contrast-[1.05] saturate-[1.10]'
+                : 'opacity-[0.16] mix-blend-multiply'
+            }`}
+          />
+          {/* Subtle matcha or golden light tint and soft layout gradient mask overlay */}
+          <div className={`absolute inset-0 bg-gradient-to-b from-transparent pointer-events-none select-none ${
+            videoBg === 'gilt'
+              ? 'via-[#FDF9F0]/10 to-[#FDFCF8]/45'
+              : 'via-[#FDFCF8]/5 to-[#FDFCF8]/40'
+          }`}></div>
+        </div>
+      )}
+
       {/* 1. Canvas layer for dynamic leaves & sparks */}
       <canvas
         ref={canvasRef}
@@ -354,6 +529,16 @@ export default function DynamicBackground() {
               <span className="text-[10px] text-gray-400 tracking-wider">意境选择</span>
               <div className="grid grid-cols-2 gap-1.5 text-xs">
                 <button
+                  onClick={() => { setPreset('gilt-flow'); setIsVisible(true); }}
+                  className={`py-1.5 px-2 rounded-lg text-center transition-all cursor-pointer col-span-2 ${
+                    preset === 'gilt-flow' && isVisible
+                      ? 'bg-amber-600 font-bold text-white shadow-md'
+                      : 'bg-surface-beige/50 text-on-surface-variant hover:bg-surface-beige'
+                  }`}
+                >
+                  👑 鎏金金箔
+                </button>
+                <button
                   onClick={() => { setPreset('spring-drift'); setIsVisible(true); }}
                   className={`py-1.5 px-2 rounded-lg text-center transition-all cursor-pointer ${
                     preset === 'spring-drift' && isVisible
@@ -392,6 +577,57 @@ export default function DynamicBackground() {
                   }`}
                 >
                   ⏸️ 止息静止
+                </button>
+              </div>
+            </div>
+
+            {/* Video Streams selection list */}
+            <div className="flex flex-col gap-1.5 border-t border-[#C4C8B7]/25 pt-2">
+              <span className="text-[10px] text-gray-400 tracking-wider">流水背景视频 (Stream Video)</span>
+              <div className="grid grid-cols-4 gap-1 text-[9px]">
+                <button
+                  onClick={() => setVideoBg('gilt')}
+                  className={`py-1 rounded text-center transition-all cursor-pointer ${
+                    videoBg === 'gilt'
+                      ? 'bg-amber-600 text-white font-bold shadow-xs'
+                      : 'bg-surface-beige/50 text-on-surface-variant hover:bg-surface-beige'
+                  }`}
+                  title="Luxury liquid golden gilt flowing stream"
+                >
+                  👑 鎏金珍宝
+                </button>
+                <button
+                  onClick={() => setVideoBg('stream')}
+                  className={`py-1 rounded text-center transition-all cursor-pointer ${
+                    videoBg === 'stream'
+                      ? 'bg-primary text-white font-bold'
+                      : 'bg-surface-beige/50 text-on-surface-variant hover:bg-surface-beige'
+                  }`}
+                  title="Serene forest stream winding through stones"
+                >
+                  🍵 印象茶溪
+                </button>
+                <button
+                  onClick={() => setVideoBg('bamboo')}
+                  className={`py-1 rounded text-center transition-all cursor-pointer ${
+                    videoBg === 'bamboo'
+                      ? 'bg-primary text-white font-bold'
+                      : 'bg-surface-beige/50 text-on-surface-variant hover:bg-surface-beige'
+                  }`}
+                  title="Gently swaying emerald bamboo forest"
+                >
+                  🍃 摇曳新绿
+                </button>
+                <button
+                  onClick={() => setVideoBg('none')}
+                  className={`py-1 rounded text-center transition-all cursor-pointer ${
+                    videoBg === 'none'
+                      ? 'bg-primary text-white font-bold'
+                      : 'bg-surface-beige/50 text-on-surface-variant hover:bg-surface-beige'
+                  }`}
+                  title="No video background, translucent canvas mode only"
+                >
+                  🌸 无视频
                 </button>
               </div>
             </div>

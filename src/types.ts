@@ -64,7 +64,7 @@ export interface Coupon {
   description: string;
 }
 
-export type ViewType = 'home' | 'catalog' | 'autumn' | 'story' | 'cart' | 'detail' | 'checkout' | 'payment' | 'showroom';
+export type ViewType = 'home' | 'catalog' | 'autumn' | 'story' | 'cart' | 'detail' | 'checkout' | 'payment' | 'showroom' | 'cakelab';
 
 export type PaymentMethod = 'wechat' | 'alipay' | 'card';
 
