@@ -198,17 +198,17 @@ export default function HomeView({
             }}
           >
             <div className="flex justify-between items-start w-full">
-              <span className="text-[10px] md:text-xs font-mono tracking-[0.4em] uppercase text-white/90 bg-white/10 backdrop-blur-xs border border-white/25 px-4.5 py-1.5 rounded-full font-semibold">
-                CRAFT & FREE CREATIVITY • 独创与自由
+              <span className="text-[10px] md:text-xs tracking-[0.4em] text-white/90 bg-white/10 backdrop-blur-xs border border-white/25 px-4.5 py-1.5 rounded-full font-semibold">
+                独创与自由
               </span>
-              <div className="text-right text-[10px] font-mono tracking-widest text-white/85 max-sm:hidden">
-                EST. 2026 // TOKYO TO UJI
+              <div className="text-right text-[11px] tracking-widest text-white/85 max-sm:hidden font-medium">
+                创立于二零二六 // 源自宇治
               </div>
             </div>
 
             <div className="max-w-3xl">
-              <span className="font-serif italic text-sm md:text-base text-amber-200 block mb-3.5 tracking-wider font-semibold">
-                putting a moment of peace to cities around the world
+              <span className="font-serif text-sm md:text-base text-amber-200 block mb-3.5 tracking-wider font-semibold">
+                手作茶物 • 在一盏茶里，安顿疲惫心灵
               </span>
               <h1 className="font-serif text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-normal leading-[1.12] mb-6 tracking-wide drop-shadow-md">
                 将片刻优雅绿意，<br className="max-sm:hidden" />
@@ -553,8 +553,8 @@ export default function HomeView({
                 <p className="text-[14px] font-serif font-bold text-[#2C3E20]">
                   🍵 订阅成功！尊享特权码已在寄送途中。
                 </p>
-                <p className="text-[11px] text-[#2C3E20]/75 mt-2 font-mono tracking-wide uppercase">
-                  the peace voucher code has been dispatched to your mailbox
+                <p className="text-[11px] text-[#2C3E20]/75 mt-2 tracking-wide font-medium">
+                  专属特权优惠券将立即发送至您的邮箱，感谢您的关注。
                 </p>
               </motion.div>
             ) : (

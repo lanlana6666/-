@@ -1026,6 +1026,13 @@ export default function ShowroomView({
                             alt={packedProduct.name}
                             className="absolute inset-0 w-full h-full object-cover opacity-25 filter blur-xs"
                           />
+                          <button
+                            onClick={() => handleRemoveItemFromPack(index)}
+                            className="absolute top-2.5 right-2.5 z-20 w-5 h-5 rounded-full bg-[#121811]/10 hover:bg-rose-100 text-[#2C3E20] hover:text-rose-700 transition-all flex items-center justify-center text-sm font-bold active:scale-95 cursor-pointer backdrop-blur-xs border border-white/20"
+                            title="移出托盘"
+                          >
+                            ×
+                          </button>
                           <div className="relative z-10 flex flex-col h-full justify-between">
                             <span className="font-mono text-[9px] text-[#8A9A5B] font-bold">
                               SLOT {index + 1}
@@ -1039,13 +1046,6 @@ export default function ShowroomView({
                                 ¥{packedProduct.price}
                               </p>
                             </div>
-
-                            <button
-                              onClick={() => handleRemoveItemFromPack(index)}
-                              className="text-[10px] font-sans text-rose-600 hover:text-rose-800 transition-colors mt-2 text-left hover:underline font-semibold"
-                            >
-                              移出托盘 ×
-                            </button>
                           </div>
                         </>
                       ) : (

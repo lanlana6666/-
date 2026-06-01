@@ -283,15 +283,15 @@ export default function App() {
             className="flex flex-col items-start cursor-pointer group"
           >
             <div className="flex items-baseline gap-2">
-              <span className="text-xl sm:text-2xl font-serif text-[#2C3E20] font-normal tracking-[0.2em] uppercase transition-transform group-hover:scale-[1.01]">
-                peace put
+              <span className="text-xl sm:text-2xl font-serif text-[#2C3E20] font-normal tracking-[0.2em] transition-transform group-hover:scale-[1.01]">
+                抹茶禅意
               </span>
-              <span className="text-[10px] text-[#8A9A5B] font-mono tracking-widest pl-1">
-                MATCHA LAB
+              <span className="text-[11px] text-[#8A9A5B] tracking-widest pl-1 font-semibold">
+                手作茶寮
               </span>
             </div>
-            <span className="text-[8px] sm:text-[9px] text-[#2C3E20]/60 font-mono tracking-wider uppercase mt-0.5 leading-none">
-              putting a moment of peace to cities around the world
+            <span className="text-[9px] sm:text-[10px] text-[#2C3E20]/60 tracking-wider mt-0.5 leading-none font-medium">
+              手作茶物 • 在一盏茶里，安顿疲惫心灵
             </span>
           </div>
 
@@ -306,7 +306,7 @@ export default function App() {
                 activeTab === 'home' ? 'text-[#5C633F] bg-[#2C3E20]/3 border-b-2 border-[#5C633F]' : ''
               }`}
             >
-              首页 • HOME
+              首页
             </button>
             <button
               onClick={() => {
@@ -318,7 +318,7 @@ export default function App() {
                 activeTab === 'catalog' ? 'text-[#5C633F] bg-[#2C3E20]/3 border-b-2 border-[#5C633F]' : ''
               }`}
             >
-              点心谱 • CATALOG
+              点心谱
             </button>
             <button
               onClick={() => {
@@ -329,7 +329,7 @@ export default function App() {
                 activeTab === 'autumn' ? 'text-amber-800 bg-amber-800/5 border-b-2 border-amber-800 font-extrabold' : ''
               }`}
             >
-              🍁 秋季限定 • AUTUMN
+              🍁 秋季限定
             </button>
             <button
               onClick={() => {
@@ -340,7 +340,7 @@ export default function App() {
                 activeTab === 'showroom' ? 'text-emerald-800 bg-emerald-800/5 border-b-2 border-emerald-800' : ''
               }`}
             >
-              🌟 御茶秀场 • SHOWROOM
+              🌟 御茶秀场
             </button>
             <button
               onClick={() => {
@@ -352,7 +352,7 @@ export default function App() {
               }`}
             >
               <Rotate3d className="w-3.5 h-3.5 text-emerald-700 animate-spin-slow" />
-              3D 定制 • LAB
+              3D 定制
             </button>
             <button
               onClick={() => {
@@ -363,7 +363,7 @@ export default function App() {
                 activeTab === 'story' ? 'text-[#5C633F] bg-[#2C3E20]/3 border-b-2 border-[#5C633F]' : ''
               }`}
             >
-              故事 • STORY
+              故事
             </button>
           </nav>
 

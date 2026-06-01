@@ -108,12 +108,12 @@ export default function LoadingScreen({ onFinished }: LoadingScreenProps) {
           transition={{ delay: 0.2, duration: 0.6 }}
           className="mb-8"
         >
-          <h2 className="font-serif text-2xl sm:text-3xl tracking-[0.25em] font-normal uppercase text-white mb-2">
-            PEACE PUT
+          <h2 className="font-serif text-2xl sm:text-3xl tracking-[0.25em] font-normal text-white mb-2">
+            抹茶禅意
           </h2>
-          <p className="text-[10px] text-[#8A9A5B] font-mono tracking-[0.4em] uppercase font-bold flex items-center justify-center gap-1">
+          <p className="text-[11px] text-[#8A9A5B] tracking-[0.4em] font-bold flex items-center justify-center gap-1">
             <Sparkles className="w-3.5 h-3.5 text-[#8A9A5B]" />
-            MATCHA ARTISAN STUDY • 宇治和弦
+            宇治和弦 • 手作茶物
           </p>
         </motion.div>
 
